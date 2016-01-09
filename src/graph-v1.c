@@ -346,12 +346,12 @@ graph_symbol_to_utf8(const struct graph_symbol *symbol)
 {
 	if (symbol->commit) {
 		if (symbol->boundary)
-			return " ◯";
+			return "　◯";
 		else if (symbol->initial)
-			return " ◎";
+			return "　◎";
 		else if (symbol->merge)
-			return " ●";
-		return " ●";
+			return "　◇";
+		return "　●";
 	}
 
 	if (symbol->merge) {
@@ -377,7 +377,7 @@ graph_symbol_to_utf8(const struct graph_symbol *symbol)
 	if (symbol->vbranch)
 		return "──";
 
-	return "  ";
+	return "　　";
 }
 
 static const chtype *

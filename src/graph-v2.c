@@ -925,19 +925,19 @@ graph_symbol_to_utf8(const struct graph_symbol *symbol)
 {
 	if (symbol->commit) {
 		if (symbol->boundary)
-			return " ◯";
+			return "　◯";
 		else if (symbol->initial)
-			return " ◎";
+			return "　◎";
 		else if (symbol->merge)
-			return " ●";
-		return " ●";
+			return "　◇";
+		return "　●";
 	}
 
 	if (graph_symbol_cross_over(symbol))
 		return "─│";
 
 	if (graph_symbol_vertical_bar(symbol))
-		return " │";
+		return "　│";
 
 	if (graph_symbol_turn_left(symbol))
 		return "─╯";
@@ -949,13 +949,13 @@ graph_symbol_to_utf8(const struct graph_symbol *symbol)
 		return "──";
 
 	if (graph_symbol_forks(symbol))
-		return " ├";
+		return "　├";
 
 	if (graph_symbol_turn_down_cross_over(symbol))
 		return "─╭";
 
 	if (graph_symbol_turn_down(symbol))
-		return " ╭";
+		return "　╭";
 
 	if (graph_symbol_merge(symbol))
 		return "─╮";
@@ -963,7 +963,7 @@ graph_symbol_to_utf8(const struct graph_symbol *symbol)
 	if (graph_symbol_multi_merge(symbol))
 		return "─┬";
 
-	return "  ";
+	return "　　";
 }
 
 static const chtype *

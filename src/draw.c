@@ -396,7 +396,7 @@ draw_graph_utf8(void *view, const struct graph *graph, const struct graph_symbol
 {
 	const char *chars = graph->symbol_to_utf8(symbol);
 
-	return draw_text(view, get_graph_color(color_id), chars + !!first);
+	return draw_text(view, get_graph_color(color_id), chars + (!!first * utf8_char_length(chars)));
 }
 
 static bool

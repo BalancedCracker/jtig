@@ -204,6 +204,11 @@ unicode_width(unsigned long c, int tab_size)
 	   (c <= 0x115f				/* Hangul Jamo */
 	    || c == 0x2329
 	    || c == 0x232a
+
+	    /* FIXME: These if accustomed to be able to specify in tigrc, it becomes even better.  */
+	    || (c >= 0x2500 && c <= 0x257f)	/* BOX DRAWINGS */
+	    || (c >= 0x25a0 && c <= 0x27BF)	/* geometric or decoration symbols */
+
 	    || (c >= 0x2e80  && c <= 0xa4cf && c != 0x303f)
 						/* CJK ... Yi */
 	    || (c >= 0xac00  && c <= 0xd7a3)	/* Hangul Syllables */
@@ -214,7 +219,7 @@ unicode_width(unsigned long c, int tab_size)
 	    || (c >= 0x20000 && c <= 0x2fffd)
 	    || (c >= 0x30000 && c <= 0x3fffd)))
 		return 2;
-	
+
 	if ((c >= 0x0300 && c <= 0x036f)	/* combining diacretical marks */
 	    || (c >= 0x1dc0 && c <= 0x1dff)	/* combining diacretical marks supplement */
 	    || (c >= 0x20d0 && c <= 0x20ff)	/* combining diacretical marks for symbols */
