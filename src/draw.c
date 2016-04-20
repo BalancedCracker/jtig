@@ -220,14 +220,15 @@ draw_field(struct view *view, enum line_type type, const char *text, int width, 
 	}
 
 	return draw_chars(view, type, text, -1, max - 1, trim)
-	    || draw_space(view, LINE_DEFAULT, max - (view->col - col), max);
+	    || draw_space(view, type, max - (view->col - col), max);
 }
 
 static bool
 draw_date(struct view *view, struct view_column *column, const struct time *time)
 {
-	enum date date = column->opt.date.display;
-	const char *text = mkdate(time, date);
+	struct date_options *opt = &column->opt.date;
+	enum date date = opt->display;
+	const char *text = mkdate(time, date, opt->local, opt->format);
 	enum align align = date == DATE_RELATIVE ? ALIGN_RIGHT : ALIGN_LEFT;
 
 	if (date == DATE_NO)

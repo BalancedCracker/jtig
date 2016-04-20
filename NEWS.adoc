@@ -29,9 +29,18 @@ Improvements:
  - Update OSX make config to find brew installed ncurses
  - Add sample git-flow keybinding (GH #421)
  - Add chocolate theme (GH #432)
+ - Show stash diffs. (GH #328)
+ - Make user tigrc location configurable. (GH #479)
+ - Compact relative date display mode. (GH #331)
+ - Add date column option controlling whether to show local date.
+ - Support for custom `strftime(3)` date formats, e.g.:
+
+	set main-view-date = custom
+	set main-view-date-format = "%Y-%m-%d"
 
 Bug fixes:
 
+ - Prevent staged rename from displaying unstaged changes (GH #472, #491)
  - Fix corrupt chunk header during staging of single lines. (GH #410)
  - Fix out of bounds read in graph-v2 module. (GH #402)
  - Add currently checked out branch to `%(branch)`. (GH #416)
@@ -41,6 +50,7 @@ Bug fixes:
  - Fix segfault when hitting return in empty file search (GH #464)
  - Remove separator on horizontal split when switching from vertical split
  - Do not expand `--all` when parsing `%(revargs)` (GH #442, #462)
+ - Fix exit when the main view is reloaded due to option toggling. (GH #470)
 
 tig-2.1.1
 ---------
