@@ -71,7 +71,7 @@ blob_open(struct view *view, enum open_flags flags)
 		};
 
 		if (!string_format(blob_spec, "%s:%s", commit, view->env->file) ||
-		    !io_run_buf(rev_parse_argv, view->env->blob, sizeof(view->env->blob))) {
+		    !io_run_buf(rev_parse_argv, view->env->blob, sizeof(view->env->blob), false)) {
 			report("Failed to resolve blob from file name");
 			return false;
 		}
@@ -106,7 +106,7 @@ blob_read(struct view *view, struct buffer *buf, bool force_stop)
 		return true;
 	}
 
-	return add_line_text(view, buf->data, LINE_DEFAULT) != NULL;
+	return pager_common_read(view, buf->data, LINE_DEFAULT, NULL);
 }
 
 static void

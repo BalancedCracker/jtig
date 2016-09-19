@@ -958,6 +958,7 @@ load_options(void)
 	const char *tig_diff_opts = getenv("TIG_DIFF_OPTS");
 	const bool diff_opts_from_args = !!opt_diff_options;
 	bool custom_tigrc_system = !!tigrc_system;
+	char buf[SIZEOF_STR];
 
 	opt_file_filter = true;
 	if (!find_option_info_by_value(&opt_diff_context)->seen)
@@ -977,9 +978,21 @@ load_options(void)
 			return error("Error in built-in config");
 	}
 
-	if (!tigrc_user)
-		tigrc_user = TIG_USER_CONFIG;
-	load_option_file(tigrc_user);
+	if (tigrc_user) {
+		load_option_file(tigrc_user);
+	} else {
+		const char *xdg_config_home = getenv("XDG_CONFIG_HOME");
+
+		if (!xdg_config_home || !*xdg_config_home)
+			tigrc_user = "~/.config/tig/config";
+		else if (!string_format(buf, "%s/tig/config", xdg_config_home))
+			return error("Failed to expand $XDG_CONFIG_HOME");
+		else
+			tigrc_user = buf;
+
+		if (load_option_file(tigrc_user) == ERROR_FILE_DOES_NOT_EXIST)
+			load_option_file(TIG_USER_CONFIG);
+	}
 
 	if (!diff_opts_from_args && tig_diff_opts && *tig_diff_opts) {
 		static const char *diff_opts[SIZEOF_ARG] = { NULL };
@@ -1384,6 +1397,9 @@ read_repo_config_option(char *name, size_t namelen, char *value, size_t valuelen
 
 	else if (!strcmp(name, "core.abbrev"))
 		parse_int(&opt_id_width, value, 0, SIZEOF_REV - 1);
+
+	else if (!strcmp(name, "diff.noprefix"))
+		parse_bool(&opt_diff_noprefix, value);
 
 	else if (!prefixcmp(name, "tig.color."))
 		set_repo_config_option(name + 10, value, option_color_command);

@@ -532,6 +532,10 @@ main_request(struct view *view, enum request request, struct line *line)
 		refresh_view(view);
 		break;
 
+	case REQ_PARENT:
+		goto_id(view, "%(commit)^", true, false);
+		break;
+
 	default:
 		return request;
 	}

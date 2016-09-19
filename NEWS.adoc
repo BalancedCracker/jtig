@@ -1,8 +1,8 @@
 Release notes
 =============
 
-master
-------
+tig-2.2
+-------
 
 Incompatibilities:
 
@@ -16,7 +16,7 @@ Improvements:
 
  - Use .mailmap to show canonical name and email addresses, off by default.
    Add `set mailmap = yes` to `~/.tigrc` to enable. (GH #411)
- - Highlight search results, configurable via `search-result` color.
+ - Highlight search results, configurable via `search-result` color. (GH #493)
  - Wrap around when searching, configurable via `wrap-search` setting.
  - Populate `%(file)` with file names from diff stat. (GH #404)
  - `tig --merge` implies `--boundary` similar to gitk.
@@ -33,6 +33,12 @@ Improvements:
  - Make user tigrc location configurable. (GH #479)
  - Compact relative date display mode. (GH #331)
  - Add date column option controlling whether to show local date.
+ - Move to parent commit in the main view. (GH #388)
+ - Add `:goto <rev>` prompt command to go to a `git-rev-parse`d revision, e.g.
+   `:goto some/branch` or `:goto %(commit)^2`.
+ - Respect the XDG standard for configuration files. (GH #513)
+ - Show tracking information in `tig status` (GH #504)
+ - Resolve diff paths when `diff.noprefix` is true. (GH #487, #488)
  - Support for custom `strftime(3)` date formats, e.g.:
 
 	set main-view-date = custom
@@ -51,6 +57,9 @@ Bug fixes:
  - Remove separator on horizontal split when switching from vertical split
  - Do not expand `--all` when parsing `%(revargs)` (GH #442, #462)
  - Fix exit when the main view is reloaded due to option toggling. (GH #470)
+ - Expand all whitespace and control characters to spaces. (GH #485)
+ - Restore ability to unbind a default keybinding with `none`. (GH #483)
+ - Fix blob view to honor the `wrap-lines` setting.
 
 tig-2.1.1
 ---------

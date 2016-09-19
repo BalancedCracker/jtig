@@ -234,6 +234,7 @@ readline_action_generator(const char *text, int state)
 		"bind",
 		"set",
 		"toggle",
+		"goto",
 		"save-display",
 		"save-options",
 		"exec",
@@ -753,28 +754,7 @@ run_prompt_command(struct view *view, const char *argv[])
 			report("Unable to parse '%s' as a line number", cmd);
 		}
 	} else if (iscommit(cmd)) {
-		int lineno;
-
-		if (!(view->ops->column_bits & view_column_bit(ID))) {
-			report("Jumping to commits is not supported by the %s view", view->name);
-			return REQ_NONE;
-		}
-
-		for (lineno = 0; lineno < view->lines; lineno++) {
-			struct view_column_data column_data = {0};
-			struct line *line = &view->line[lineno];
-
-			if (view->ops->get_column_data(view, line, &column_data) &&
-			    column_data.id &&
-			    !strncasecmp(column_data.id, cmd, cmdlen)) {
-				string_ncopy(view->env->search, cmd, cmdlen);
-				select_view_line(view, lineno);
-				report_clear();
-				return REQ_NONE;
-			}
-		}
-
-		report("Unable to find commit '%s'", view->env->search);
+		goto_id(view, cmd, true, true);
 		return REQ_NONE;
 
 	} else if (cmdlen > 1 && (cmd[0] == '/' || cmd[0] == '?')) {
@@ -812,6 +792,13 @@ run_prompt_command(struct view *view, const char *argv[])
 			open_pager_view(view, OPEN_PREPARED | OPEN_WITH_STDERR);
 		}
 
+	} else if (!strcmp(cmd, "goto")) {
+		if (!argv[1] || !strlen(argv[1]))
+			report("goto requires an argument");
+		else
+			goto_id(view, argv[1], true, true);
+		return REQ_NONE;
+
 	} else if (!strcmp(cmd, "save-display")) {
 		const char *path = argv[1] ? argv[1] : "tig-display.txt";
 
@@ -830,13 +817,19 @@ run_prompt_command(struct view *view, const char *argv[])
 			report("Saved options to %s", path);
 
 	} else if (!strcmp(cmd, "exec")) {
+		// argv may be allocated and mutations below will cause
+		// free() to error out so backup and restore. :(
+		const char *cmd = argv[1];
 		struct run_request req = { view->keymap, {0}, argv + 1 };
 		enum status_code code = parse_run_request_flags(&req.flags, argv + 1);
 
 		if (code != SUCCESS) {
+			argv[1] = cmd;
 			report("Failed to execute command: %s", get_status_message(code));
 		} else {
-			return exec_run_request(view, &req);
+			request = exec_run_request(view, &req);
+			argv[1] = cmd;
+			return request;
 		}
 
 	} else if (!strcmp(cmd, "toggle")) {
